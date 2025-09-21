@@ -27,4 +27,5 @@ COPY . .
 EXPOSE 8000
 
 # Run Uvicorn (production: remove --reload)
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "which uvicorn && echo PORT=$PORT && uvicorn main:app --host 0.0.0.0 --port $PORT"]
