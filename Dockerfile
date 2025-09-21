@@ -1,9 +1,9 @@
-# Use official Python base image
 FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/root/.local/bin:${PATH}"
 
 # Set working directory
 WORKDIR /app
@@ -16,10 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Ensure uv is in PATH
-ENV PATH="/root/.cargo/bin:${PATH}"
-
-# Copy project files
+# Copy project files and install dependencies
 COPY pyproject.toml uv.lock* ./
 RUN uv sync --frozen
 
@@ -29,5 +26,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run Uvicorn with hot reload
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Run Uvicorn (production: remove --reload)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
